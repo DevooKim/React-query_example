@@ -16,6 +16,7 @@ const TodoPlaceholder = () => {
   });
 
   useEffect(() => {
+    // 라우팅되면 캐시(?)가 사라진다???
     console.log("old: ", queryClient.getQueryData(["todos"]));
   }, []);
   return (
