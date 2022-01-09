@@ -4,7 +4,7 @@ import { useParams, useSearchParams } from "react-router-dom";
 import { useQuery, useQueryClient } from "react-query";
 import PropTypes from "prop-types";
 
-import { fetchTodo } from "./apis";
+import { fetchTodo } from "../apis";
 
 const TodoPlaceholder = () => {
   const { index } = useParams();

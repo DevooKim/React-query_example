@@ -1,11 +1,8 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useTable } from "react-table";
-import { useSearchParams, Routes, Route, Link } from "react-router-dom";
-import { useQuery } from "react-query";
+import { useSearchParams } from "react-router-dom";
 import PropTypes from "prop-types";
-
-import { fetchTodos } from "./apis";
-import TodoPlaceholder from "./TodoPlaceholder";
+import { fetchTodos } from "../apis";
 
 const columns = [
   {
@@ -24,34 +21,23 @@ const columns = [
     Header: "clear",
     accessor: "clear",
   },
-  {
-    Header: "show",
-    accessor: "show",
-  },
 ];
 
 const prepareData = (data) => {
   return data.map((v) => ({
     ...v,
     clear: v.clear ? "O" : "X",
-    show: <Link to={v.index.toString()}>show</Link>,
   }));
 };
 
-const useFetch = ({ limit, page }) => {
-  // pagination에 유용
-  // 새로운 데이터를 fetch하면 마지막으로 success된 데이터를 먼저 가져오고
-  // 새로운 데이터가 도착하면 교체한다. => loading상태를 보여주지 않는다.
-  return useQuery(["todos", page, limit], () => fetchTodos({ page, limit }), { keepPreviousData: true });
-  // return useQuery(["fetch", page], () => fetchTodos({ page, limit }));
-};
-
-const TodoQuery = () => {
+const Todo = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const maxPageRef = useRef(0);
+  const totalRef = useRef(0);
   const page = parseInt(searchParams.get("page", 10)) > -1 ? parseInt(searchParams.get("page", 10)) : 0;
   const limit = parseInt(searchParams.get("limit", 10)) || 10;
-  const { isLoading: loading, data: { data, total } = {}, error, isFetching } = useFetch({ page, limit });
-  const maxPage = Math.floor(total / limit);
 
   const nextPage = () => {
     setSearchParams({ page: page + 1, limit: limit });
@@ -66,6 +52,18 @@ const TodoQuery = () => {
     setSearchParams({ page: 0, limit: value });
   };
 
+  useEffect(() => {
+    const fetch = async () => {
+      setLoading(true);
+      const { data, total } = await fetchTodos({ page, limit });
+      setData(data);
+      totalRef.current = total;
+      maxPageRef.current = Math.floor(total / limit);
+      setLoading(false);
+    };
+    fetch();
+  }, [page, limit]);
+
   const { getTableProps, getTableBodyProps, headerGroups, prepareRow, rows } = useTable({
     columns,
     data: prepareData(data || []),
@@ -74,24 +72,21 @@ const TodoQuery = () => {
 
   return (
     <>
-      <h1>Todo-Query</h1>
+      <h1>Todo</h1>
       <pre>
         <code>
           {JSON.stringify(
             {
               pageIndex: page,
               pageSize: limit,
-              total: total,
-              maxPage: maxPage,
+              total: totalRef.current,
+              maxPage: maxPageRef.current,
             },
             null,
             2
           )}
         </code>
       </pre>
-      <Routes>
-        <Route path=":index" element={<TodoPlaceholder />} />
-      </Routes>
       {loading ? (
         <div>loading...</div>
       ) : (
@@ -144,7 +139,7 @@ const TodoQuery = () => {
             <button onClick={() => previousPage()} disabled={page === 0}>
               {"<"}
             </button>{" "}
-            <button onClick={() => nextPage()} disabled={page === maxPage}>
+            <button onClick={() => nextPage()} disabled={page === maxPageRef.current}>
               {">"}
             </button>
             <select value={limit} onChange={onChangePageSize}>
@@ -161,6 +156,6 @@ const TodoQuery = () => {
   );
 };
 
-TodoQuery.propTypes = {};
+Todo.propTypes = {};
 
-export default TodoQuery;
+export default Todo;

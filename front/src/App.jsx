@@ -1,15 +1,12 @@
 import React, { memo } from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
-import { useQuery, useQueryClient, QueryClient, QueryClientProvider } from "react-query";
+import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
-import TodoQuery from "./TodoQuery";
-import Todo from "./Todo";
-import TodoPlaceholder from "./TodoPlaceholder";
-
-const Home = () => <h1>HOME2</h1>;
+import TodoQuery from "./pages/TodoQuery";
+import Todo from "./pages/Todo";
+import TodoPlaceholder from "./pages/TodoPlaceholder";
 
 const Comp = memo(() => {
-  console.log("render2");
   return (
     <div>
       <h1>Home1</h1>

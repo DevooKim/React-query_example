@@ -1,10 +1,7 @@
 import axios from "axios";
 
-const URL = "http://localhost:3000";
+axios.defaults.baseURL = "http://localhost:3000";
 
-axios.defaults({
-  url: URL,
-});
 export const addUser = async (name) => {
   const { data } = await axios({ method: "post", user: `/user`, data: { name } });
 
