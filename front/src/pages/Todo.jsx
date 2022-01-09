@@ -1,7 +1,8 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useTable } from "react-table";
 import { useSearchParams } from "react-router-dom";
-import PropTypes from "prop-types";
+
+import { useLoginState } from "../LoginContext";
 import { fetchTodos } from "../apis";
 
 const columns = [
@@ -31,6 +32,7 @@ const prepareData = (data) => {
 };
 
 const Todo = () => {
+  const { name } = useLoginState();
   const [searchParams, setSearchParams] = useSearchParams();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -55,7 +57,7 @@ const Todo = () => {
   useEffect(() => {
     const fetch = async () => {
       setLoading(true);
-      const { data, total } = await fetchTodos({ page, limit });
+      const { data, total } = await fetchTodos({ page, limit, name });
       setData(data);
       totalRef.current = total;
       maxPageRef.current = Math.floor(total / limit);

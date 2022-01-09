@@ -1,28 +1,12 @@
-import React, { memo } from "react";
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import React from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
-import TodoQuery from "./pages/TodoQuery";
-import Todo from "./pages/Todo";
-import TodoPlaceholder from "./pages/TodoPlaceholder";
+import { LoginProvider } from "./LoginContext";
 
-const Comp = memo(() => {
-  return (
-    <div>
-      <h1>Home1</h1>
-      <nav>
-        <Link to="/">Home</Link> | <Link to="todo">Todo</Link> | <Link to="todoQuery">TodoQuery</Link>
-        <br></br>
-        <br></br>
-        <Link to="placeholder">TodoPlaceholder</Link>
-      </nav>
-    </div>
-  );
-});
+import { Router } from "./Router";
 
 const App = () => {
-  console.log("render");
-  const queryClient1 = new QueryClient({
+  const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
         // 브라우저에 다시 포커스 했을 때 refetch
@@ -30,20 +14,15 @@ const App = () => {
       },
     },
   });
-  const queryClient2 = new QueryClient();
 
   return (
-    <QueryClientProvider client={queryClient1}>
-      <BrowserRouter>
-        <Comp />
-        <Routes>
-          <Route path="todo" element={<Todo />}></Route>
-          <Route path="todoQuery/*" element={<TodoQuery />}></Route>
-          <Route path="placeholder" element={<TodoPlaceholder />}></Route>
-        </Routes>
-      </BrowserRouter>
-      <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>
+    <LoginProvider>
+      <QueryClientProvider client={queryClient}>
+        <h1>React-query-library</h1>
+        <Router />
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
+    </LoginProvider>
   );
 };
 

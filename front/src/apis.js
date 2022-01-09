@@ -3,13 +3,12 @@ import axios from "axios";
 axios.defaults.baseURL = "http://localhost:3000";
 
 export const addUser = async (name) => {
-  const { data } = await axios({ method: "post", user: `/user`, data: { name } });
-
+  const { data } = await axios({ method: "post", url: `/user`, data: { name } });
   return data;
 };
 
 export const getUser = async (name) => {
-  const { data } = await axios({ method: "get", user: `/user?name=${name}` });
+  const { data } = await axios({ method: "get", url: `/user?name=${name}` });
   return data;
 };
 
