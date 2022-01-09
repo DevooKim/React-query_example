@@ -6,27 +6,44 @@ import TodoQuery from "./pages/TodoQuery";
 import Todo from "./pages/Todo";
 import Login from "./components/Login";
 
+import { initTodos } from "./apis.js";
+
 const AuthRoute = ({ isLogin }) => <>{isLogin ? <Outlet /> : <Navigate to="/login" />}</>;
 
 const Header = memo(() => {
-  const { setIsLogin } = useLoginAction();
+  const { dispatchLogout } = useLoginAction();
   const logout = () => {
-    sessionStorage.removeItem("name");
-    setIsLogin(false);
+    dispatchLogout();
+  };
+
+  const init = async () => {
+    const name = sessionStorage.getItem("name");
+    const result = await initTodos(name);
   };
   return (
     <div>
-      <nav style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+      <nav
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          gap: "1rem",
+          paddingLeft: "0.5rem",
+          paddingRight: "0.5rem",
+        }}
+      >
         <div>
           <Link to="/">Home</Link> | <Link to="todo">Todo</Link> | <Link to="todoQuery">TodoQuery</Link>
         </div>
-        <button onClick={logout}>logout</button>
+        <div style={{ display: "flex", gap: "1rem" }}>
+          <button onClick={logout}>logout</button>
+          <button onClick={init}>init</button>
+        </div>
       </nav>
     </div>
   );
 });
 export const Router = () => {
-  const { isLogin } = useLoginState();
+  const isLogin = useLoginState();
   return (
     <BrowserRouter>
       {isLogin ? <Header /> : <Login />}

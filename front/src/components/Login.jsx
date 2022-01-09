@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { useLoginAction, useLoginState } from "../LoginContext";
+import { useLoginAction } from "../LoginContext";
 import { addUser, getUser } from "../apis";
 
 const Login = () => {
-  const { name } = useLoginState();
-  const { setName, setIsLogin } = useLoginAction();
+  const [name, setName] = useState("");
+  const { dispatchLogin } = useLoginAction();
   const [status, setStatus] = useState("");
 
   const onChange = (e) => {
@@ -23,7 +23,7 @@ const Login = () => {
       return;
     }
     setStatus("");
-    setIsLogin(true);
+    dispatchLogin(name);
   };
 
   const onLogin = async () => {
@@ -33,7 +33,7 @@ const Login = () => {
       return;
     }
     setStatus("");
-    setIsLogin(true);
+    dispatchLogin(name);
   };
 
   return (

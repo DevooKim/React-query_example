@@ -13,27 +13,29 @@ export const useLoginAction = () => {
 };
 
 export const LoginProvider = ({ children }) => {
-  const _name = sessionStorage.getItem("name");
-  const [name, setName] = useState("");
+  const name = sessionStorage.getItem("name");
   const [isLogin, setIsLogin] = useState(false);
 
   useEffect(() => {
-    if (_name === null || _name === undefined || _name?.length === 0) {
+    if (name === null || name === undefined || name?.length === 0) {
       return;
     }
-    setName(_name);
     setIsLogin(true);
   }, []);
 
-  useEffect(() => {
-    if (isLogin) {
-      sessionStorage.setItem("name", name);
-    }
-  }, [isLogin, name]);
+  const dispatchLogin = (name) => {
+    sessionStorage.setItem("name", name);
+    setIsLogin(true);
+  };
+
+  const dispatchLogout = () => {
+    sessionStorage.removeItem("name");
+    setIsLogin(false);
+  };
 
   return (
-    <LoginStateContext.Provider value={{ name, isLogin }}>
-      <LoginActionContext.Provider value={{ setIsLogin, setName }}>{children}</LoginActionContext.Provider>
+    <LoginStateContext.Provider value={isLogin}>
+      <LoginActionContext.Provider value={{ dispatchLogin, dispatchLogout }}>{children}</LoginActionContext.Provider>
     </LoginStateContext.Provider>
   );
 };

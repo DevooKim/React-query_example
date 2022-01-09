@@ -12,6 +12,11 @@ export const getUser = async (name) => {
   return data;
 };
 
+export const initTodos = async (name) => {
+  const { data } = await axios({ method: "post", url: "/todo/init", data: { name } });
+  return data;
+};
+
 export const fetchTodos = async ({ page, limit, name }) => {
   const {
     data: { data, total },

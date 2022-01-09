@@ -58,6 +58,11 @@ app.post("/todo/init", async (req, res) => {
   const size = 105;
   const arr = [];
   const { name } = req.body;
+
+  if (!name) {
+    return res.send(false);
+  }
+
   for (let i = 0; i < size; i++) {
     arr.push({
       title: `title${i}`,
