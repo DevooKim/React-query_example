@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { useLoginAction } from "../LoginContext";
+import { useLoginAction } from "../contexts/LoginContext";
+import { useErrorAction } from "../contexts/ErrorContext";
 import { addUser, getUser } from "../apis";
 
 const Login = () => {
   const [name, setName] = useState("");
+  const setError = useErrorAction();
   const { dispatchLogin } = useLoginAction();
-  const [status, setStatus] = useState("");
 
   const onChange = (e) => {
     const { value } = e.target;
@@ -19,20 +20,20 @@ const Login = () => {
     const result = await addUser(name);
 
     if (!result) {
-      setStatus("already exists name");
+      setError("already exists name");
       return;
     }
-    setStatus("");
+    setError("");
     dispatchLogin(name);
   };
 
   const onLogin = async () => {
     const result = await getUser(name);
     if (!result) {
-      setStatus("not exists name");
+      setError("not exists name");
       return;
     }
-    setStatus("");
+    setError("");
     dispatchLogin(name);
   };
 
@@ -45,7 +46,6 @@ const Login = () => {
       <button type="submit" onClick={onLogin}>
         login
       </button>
-      <h1>{status}</h1>
     </>
   );
 };

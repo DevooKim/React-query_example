@@ -1,7 +1,9 @@
 import React from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
-import { LoginProvider } from "./LoginContext";
+import { Error } from "./components/Error";
+import { ErrorProvider } from "./contexts/ErrorContext";
+import { LoginProvider } from "./contexts/LoginContext";
 
 import { Router } from "./Router";
 
@@ -16,13 +18,16 @@ const App = () => {
   });
 
   return (
-    <LoginProvider>
-      <QueryClientProvider client={queryClient}>
-        <h1>React-query-library</h1>
-        <Router />
-        <ReactQueryDevtools initialIsOpen={false} />
-      </QueryClientProvider>
-    </LoginProvider>
+    <ErrorProvider>
+      <LoginProvider>
+        <QueryClientProvider client={queryClient}>
+          <h1>React-query-library</h1>
+          <Error />
+          <Router />
+          <ReactQueryDevtools initialIsOpen={false} />
+        </QueryClientProvider>
+      </LoginProvider>
+    </ErrorProvider>
   );
 };
 

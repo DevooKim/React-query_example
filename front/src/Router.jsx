@@ -1,17 +1,19 @@
 import React, { memo } from "react";
 import { BrowserRouter, Routes, Route, Link, Navigate, Outlet } from "react-router-dom";
 
-import { useLoginState, useLoginAction } from "./LoginContext";
+import { useLoginState, useLoginAction } from "./contexts/LoginContext";
 import TodoQuery from "./pages/TodoQuery";
 import Todo from "./pages/Todo";
 import Login from "./components/Login";
 
 import { initTodos } from "./apis.js";
+import { useErrorAction } from "./contexts/ErrorContext";
 
 const AuthRoute = ({ isLogin }) => <>{isLogin ? <Outlet /> : <Navigate to="/login" />}</>;
 
 const Header = memo(() => {
   const { dispatchLogout } = useLoginAction();
+  const setError = useErrorAction();
   const logout = () => {
     dispatchLogout();
   };
@@ -19,6 +21,9 @@ const Header = memo(() => {
   const init = async () => {
     const name = sessionStorage.getItem("name");
     const result = await initTodos(name);
+    if (!result) {
+      setError("INIT FAIL");
+    }
   };
   return (
     <div>
