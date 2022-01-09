@@ -3,6 +3,7 @@ const cors = require("cors");
 const Todo = require("./db.js");
 const helmet = require("helmet");
 const mongoose = require("mongoose");
+const dotenv = require("dotenv").config();
 
 const app = express();
 
@@ -13,10 +14,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.options("*", cors());
 
-mongoose.connect("mongodb://127.0.0.1:27017", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+const mongoId = process.env.MONGO_ID;
+const password = process.env.MONGO_PW;
+mongoose.connect(
+  `mongodb+srv://${mongoId}:${password}@cluster0.p4s0q.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`,
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }
+);
 
 const db = mongoose.connection;
 db.once("open", () => {
