@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
-const Todo = require("./db.js");
+const Todo = require("./todoSchema.js");
+const User = require("./userSchema.js");
 const helmet = require("helmet");
 const mongoose = require("mongoose");
 require("dotenv").config();
@@ -35,7 +36,18 @@ const timeOut = (callback, time = 300) => {
   }, time);
 };
 
-app.post("/init", async (req, res) => {
+app.post("/user", async (req, res) => {
+  const { name } = req.body;
+  const isExists = await User.exists({ name });
+  if (isExists) {
+    return res.send("already_exists_name");
+  }
+
+  await User.create({ name });
+  return res.send(true);
+});
+
+app.post("/todo/init", async (req, res) => {
   await Todo.remove({});
   const size = 105;
   const arr = [];
