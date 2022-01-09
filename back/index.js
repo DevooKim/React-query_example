@@ -47,6 +47,12 @@ app.post("/user", async (req, res) => {
   return res.send(true);
 });
 
+app.get("/user", async (req, res) => {
+  const { name } = req.query;
+  const isExists = await User.exists({ name });
+  return res.send(isExists);
+});
+
 app.post("/todo/init", async (req, res) => {
   await Todo.remove({});
   const size = 105;
@@ -83,8 +89,7 @@ app.get("/todo", async (req, res) => {
 });
 
 app.get("/todos", async (req, res) => {
-  const { limit = 10, skip = 0 } = req.query;
-  const { name } = req.body;
+  const { name, limit = 10, skip = 0 } = req.query;
   const result = await Todo.find({ name }).limit(parseInt(limit, 10)).skip(parseInt(skip, 10));
   const total = await Todo.count({ name });
   return timeOut(() => {
